@@ -637,19 +637,25 @@ else:
             "image/png"
         )
 
-        try:
-            pass_b64 = base64.b64encode(pass_img.getvalue()).decode("ascii")
-            payload = {
-                "name": st.session_state.name,
-                "email": st.session_state.email,
-                "uuid": st.session_state.uid,
-                "department": st.session_state.dept,
-                "event": get_setting(conn, "event_title"),
-                "pass_name": f"pass_{st.session_state.uid}.png",
-                "pass_base64": pass_b64
-            }
-            requests.post(POWER_AUTOMATE_URL, json=payload, timeout=5)
-        except:
-            st.info("Email will be sent shortly.")
+        if "email_sent" not in st.session_state:
+                    st.session_state.email_sent = False
+        
+                if not st.session_state.email_sent:
+                    try:
+                        pass_b64 = base64.b64encode(pass_img.getvalue()).decode("ascii")
+                        payload = {
+                            "name": st.session_state.name,
+                            "email": st.session_state.email,
+                            "uuid": st.session_state.uid,
+                            "department": st.session_state.dept,
+                            "event": get_setting(conn, "event_title"),
+                            "pass_name": f"pass_{st.session_state.uid}.png",
+                            "pass_base64": pass_b64
+                        }
+                        requests.post(POWER_AUTOMATE_URL, json=payload, timeout=5)
+                        st.session_state.email_sent = True   # 🔐 LOCK IT
+                    except:
+                        st.info("Email will be sent shortly.")
+
 
         st.snow()
