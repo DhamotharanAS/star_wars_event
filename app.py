@@ -9,13 +9,15 @@ import hashlib
 import base64
 import re
 import requests
+import time
+
 
 
 # PAGE CONFIG
 
 st.set_page_config(
-    page_title=" Star Wars Event",
-    page_icon="🔔",
+    page_title=" Star Wars x Santa Zumba",
+    page_icon="🎄",
     layout="centered"
 )
 st.markdown("""
@@ -114,6 +116,7 @@ input, textarea, select {
     color: #ffffff !important;
     border-radius: 12px !important;
     border: none !important;
+    caret-color: #fffff !important;
 }
 
 /* ===== REGISTER BUTTON ===== */
@@ -211,7 +214,8 @@ ALLOWED_EMAIL_DOMAINS = ["gmail.com", "saipem.com"]
 #     r"(?:\.[a-zA-Z]{2,6})$"
 # )
 EMAIL_REGEX = re.compile(
-    r"^[a-zA-Z0-9._%+-]+@(gmail\.com|saipem\.com)$"
+    # r"^[a-zA-Z0-9._%+-]+@(gmail\.com|saipem\.com)$"
+    r"^[a-zA-Z0-9._%+-]+@(saipem\.com)$"
 )
 
 
@@ -573,7 +577,7 @@ else:
         <div class="hero-divider"></div>
         <h1>STAR WARS WITH SANTA</h1>
         <div class="subtitle centered-sub">
-                Dance • Zumba • Celebrities • Celebration</div>
+                Dance • Zumba • Celebration</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -586,7 +590,27 @@ else:
 
     if not st.session_state.registered:
         name = st.text_input("Full Name")
-        email_input = st.text_input("Email ID")
+        if "email_input" not in st.session_state:
+            st.session_state.email_input = ""
+
+        if "reset_email" not in st.session_state:
+            st.session_state.reset_email = False
+
+        # Reset email field BEFORE rendering input
+        if st.session_state.reset_email:
+            st.session_state.email_input = ""
+            st.session_state.reset_email = False
+
+        email_input = st.text_input(
+            "Email ID",
+            key="email_input"
+        )
+
+        # email_input = st.text_input(
+        #     "Email ID",
+        #     key="email_input"
+        # )
+
         dept = st.selectbox("Department", DEPARTMENTS)
 
         if st.button("Register"):
@@ -595,7 +619,18 @@ else:
             if not name or dept == "Select Department" or not email:
                 st.error("Please fill all fields")
             elif not is_valid_email(email):
-                st.error("❌ Not a valid email format")
+                error_box = st.empty()
+                error_box.error("❌ Please enter a valid Saipem Email ID")
+
+                # Trigger reset for next run
+                st.session_state.reset_email = True
+
+                time.sleep(2.5)
+                error_box.empty()
+
+                st.rerun()
+
+
 
             else:
                 existing = is_email_registered(conn, email)
