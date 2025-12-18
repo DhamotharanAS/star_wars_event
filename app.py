@@ -201,7 +201,7 @@ DEPARTMENTS = [
     "Customer Support", "Admin", "Other"
 ]
 
-ALLOWED_EMAIL_DOMAINS = ["gmail.com", "saipem.com"]
+ALLOWED_EMAIL_DOMAINS = ["saipem.com"]
 
 # --------------------------------------------------
 # EMAIL VALIDATION (STRICT)
