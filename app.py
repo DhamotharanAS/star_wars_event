@@ -16,7 +16,7 @@ import time
 # PAGE CONFIG
 
 st.set_page_config(
-    page_title=" Star Wars x Santa Zumba",
+    page_title=" Star Wars Event",
     page_icon="🎄",
     layout="centered"
 )
@@ -770,3 +770,4 @@ else:
 
 
         st.snow()
+
